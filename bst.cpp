@@ -15,15 +15,12 @@
    as its fields like left and right*/
 bst::bst(){
   root = NULL;
-  root->left = NULL;
-  root->right = NULL;
 }
 
 /* the destructor deallocates all dynamically allocated data
    by traversing the entire tree and removing all nodes. */
 bst::~bst(){
-  if(!root) return;
-  
+  if(!root) return;  
 }
 
 /* a wrapper function to insert data. it is passed in arguments from main,

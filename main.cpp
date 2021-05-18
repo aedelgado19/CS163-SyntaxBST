@@ -28,8 +28,8 @@ int main(){
   while(strcmp(input, "q") != 0){
     cout << "--------------------------------" << endl;
     cout << "valid commands are: " << endl;
-    cout << "add ------ add a new syntax " << endl;
-    cout << "display -- display all syntaxes " << endl;
+    cout << "add - add a new syntax " << endl;
+    cout << "display - display all syntaxes " << endl;
     cout << "retrieve - retrieve a matching item by name " << endl;
     cout << "> ";
     cin.get(input, 20);
