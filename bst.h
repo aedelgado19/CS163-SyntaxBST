@@ -49,12 +49,12 @@ class bst {
   node* root;
 
   //recursive functions:
-  int insert(node* current);
-  int display_all(node* current);
+  int insert(node* current, node* to_add);
+  int display_all(node* current, int depth);
   int retrieve(node* current, char* name);
   int remove_by_name(node* current, char* name);
   int get_height(node* current);
   int efficiency(node* current);
   int display_syntax(node* current);
 				  
-}
+};

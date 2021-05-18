@@ -7,6 +7,8 @@
    Last updated: May 17, 2021
  */
 #include <iostream>
+#include <cstring>
+#include "bst.h"
 using namespace std;
 
 void print_error_messages(int success, const char function_name[]);
@@ -56,12 +58,12 @@ int main(){
       cout << "> ";
       cin.get(efficiency, 500);
       cin.get();
-      success = bst->insert(name, desc, example, efficiency);
+      success = tree->insert(name, desc, example, efficiency);
       print_error_messages(success, "add");
     }
     
     if(strcmp(input, "display") == 0){
-      success = bst->display_all();
+      success = tree->display_all();
       print_error_messages(success, "display");
     }
 
@@ -70,7 +72,7 @@ int main(){
       cout << "> ";
       cin.get(name, 180);
       cin.get();
-      success = bst->retrieve(name);
+      success = tree->retrieve(name);
       print_error_messages(success, "retrieve");
     }
   }
