@@ -37,7 +37,7 @@ class bst {
   int display_all();
   
   //task 3: retrieve a matching item by the name
-  int retrieve(char* name, char*& desc, char*& example, char*& efficiency);
+  int retrieve(char* name, char*& desc, char*& example, char*& efficiency, bool & found);
 
   //task 4: remove an item by the name of the concept
   int remove_by_name(char* name);
@@ -58,7 +58,7 @@ class bst {
   int insert(node* current, node* to_add);
   void display_all(node* current, int depth);
   void display_info(node* current);
-  int retrieve(node* current, char* name, char*& d, char *& ex, char *&ef);
+  int retrieve(node* current, char* name, char*& d, char *& ex, char *&ef, bool & found);
   int remove_by_name(node* current, char* name);
   int get_height(node* current);
   int efficiency(node* current);

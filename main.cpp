@@ -31,6 +31,7 @@ int main(){
     cout << "add - add a new syntax " << endl;
     cout << "display - display all syntaxes " << endl;
     cout << "retrieve - retrieve a matching item by name " << endl;
+    cout << "q - quit " << endl;
     cout << "> ";
     cin.get(input, 20);
     cin.get();
@@ -71,18 +72,20 @@ int main(){
       char* d = new char[500]; //holds description
       char* ex = new char[500]; //holds example
       char* ef = new char[500]; //holds efficiency note
+      bool found = false;
       cout << "Enter the name of the syntax you would like to retrieve." << endl;
       cout << "> ";
       cin.get(name, 180);
       cin.get();
-      success = tree->retrieve(name, d, ex, ef);
-      if(success == 1){
-	cout << "NAME: " << name << endl;
-	cout << "DESCRIPTION: " << d << endl;
-	cout << "EXAMPLE: " << ex << endl;
-	cout << "ABOUT EFFICIENCY: " << ef << endl;
+      success = tree->retrieve(name, d, ex, ef, found);
+      if(found == true){ //if they're not null
+	  cout << "NAME: " << name << endl;
+	  cout << "DESCRIPTION: " << d << endl;
+	  cout << "EXAMPLE: " << ex << endl;
+	  cout << "ABOUT EFFICIENCY: " << ef << endl;
+      } else {
+	print_error_messages(0, "retrieve");
       }
-      print_error_messages(success, "retrieve");
     }
   }
   

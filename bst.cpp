@@ -91,7 +91,7 @@ int bst::insert(node* current, node* to_add){
   }
 
   //check right
-  if(strcmp(current->name, to_add->name) > 0){
+  if(strcmp(current->name, to_add->name) < 0){
     if(!current->right){
       current->right = to_add;
       return 1;
@@ -100,7 +100,7 @@ int bst::insert(node* current, node* to_add){
   }
 
   //check left
-  if(strcmp(current->name, to_add->name) < 0){
+  if(strcmp(current->name, to_add->name) > 0){
     if(!current->left){
       current->left = to_add;
       return 1;
@@ -154,15 +154,28 @@ void bst::display_info(node* current){
   std::cout << "NAME: " << current->name << std::endl;
   std::cout << "     description: " << current->desc << std::endl;
   std::cout << "     example: " << current->example << std::endl;
-  std::cout << "     note about efficiency: " << current->efficiency << std::endl; 
+  std::cout << "     note about efficiency: " << current->efficiency << std::endl;
+  std::cout << "     left child: ";
+  if(current->left){
+    std::cout << current->left->name << std::endl;
+  } else {
+    std::cout << "NULL" << std::endl;
+  }
+  std::cout << "     right child: ";
+  if(current->right){
+    std::cout << current->right->name << std::endl;
+  } else {
+    std::cout << "NULL" << std::endl;
+  }
+
   //left side
   display_info(current->left);
 }
 
 /* a function to retrieve based on a passed in name. The found 
    information is returned by a reference in the arguments. */
-int bst::retrieve(char* name, char*& desc, char*& example, char*& efficiency){
-  int success = retrieve(root, name, desc, example, efficiency);
+int bst::retrieve(char* name, char*& desc, char*& example, char*& efficiency, bool & found){
+  int success = retrieve(root, name, desc, example, efficiency, found);
   if(success == 0){
     return 0;
   }
@@ -172,23 +185,23 @@ int bst::retrieve(char* name, char*& desc, char*& example, char*& efficiency){
 /* this function walks through the whole tree to find a matching name.
    if it finds it, it will supply what it found back through the arguments.
    otherwise, it will return 0 if it could not be found. */
-int bst::retrieve(node* current, char* name, char*& d, char *& ex, char *& ef){
+int bst::retrieve(node* current, char* name, char*& d, char *& ex, char *& ef, bool& found){
   if(!root) return 0;
 
   //right side
-  if(strcmp(current->name, name) > 0){
+  if(strcmp(current->name, name) < 0){
     if(current->right == NULL){
       return 0; //that number isn't in the tree
     }
-    retrieve(current->right, name, d, ex, ef);
+    retrieve(current->right, name, d, ex, ef, found);
   }
 
   //left side
-  if(strcmp(current->name, name) < 0){
+  if(strcmp(current->name, name) > 0){
     if(current->left == NULL){
       return 0; //that number isn't in the tree
     }
-    retrieve(current->left, name, d, ex, ef);
+    retrieve(current->left, name, d, ex, ef, found);
   }
 
   //found a match
@@ -196,9 +209,10 @@ int bst::retrieve(node* current, char* name, char*& d, char *& ex, char *& ef){
     strcpy(d, current->desc);
     strcpy(ex, current->example);
     strcpy(ef, current->efficiency);
+    found = true;
     return 1;
   }
-  return 1;
+  return 0;
 }
 
 int bst::remove_by_name(char* name){
