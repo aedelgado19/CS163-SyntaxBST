@@ -68,11 +68,14 @@ int main(){
     }
 
     if(strcmp(input, "retrieve") == 0){
+      char* d = new char[500]; //holds description
+      char* ex = new char[500]; //holds example
+      char* ef = new char[500]; //holds efficiency note
       cout << "Enter the name of the syntax you would like to retrieve." << endl;
       cout << "> ";
       cin.get(name, 180);
       cin.get();
-      success = tree->retrieve(name);
+      success = tree->retrieve(name, d, ex, ef);
       print_error_messages(success, "retrieve");
     }
   }

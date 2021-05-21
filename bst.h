@@ -5,6 +5,8 @@
    for the ADT. This data structure is a binary
    search tree where each node is a different 
    type of advanced C++ syntax.
+   A node contains a name, a description, an example,
+   a note about its efficiency, and its pointers (L and R).
 
    Last updated: May 17, 2021
  */
@@ -26,12 +28,16 @@ class bst {
   bst();
   ~bst();
 
+  //a function called by the destructor since the destructor cannot have
+  //any parameters (which is necessary for recursion)
+  int delete_all(node *& current);
+
   //task 2: insert a new item and display all
   int insert(char* name, char* desc, char* example, char* efficiency);
   int display_all();
-
+  
   //task 3: retrieve a matching item by the name
-  int retrieve(char* name);
+  int retrieve(char* name, char*& desc, char*& example, char*& efficiency);
 
   //task 4: remove an item by the name of the concept
   int remove_by_name(char* name);
@@ -50,8 +56,9 @@ class bst {
 
   //recursive functions:
   int insert(node* current, node* to_add);
-  int display_all(node* current, int depth);
-  int retrieve(node* current, char* name);
+  void display_all(node* current, int depth);
+  void display_info(node* current);
+  int retrieve(node* current, char* name, char*& d, char *& ex, char *&ef);
   int remove_by_name(node* current, char* name);
   int get_height(node* current);
   int efficiency(node* current);
