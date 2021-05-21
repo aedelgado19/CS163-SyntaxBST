@@ -136,7 +136,7 @@ void bst::display_all(node* current, int depth){
 
   //spacing
   for(int i = 0; i < depth; i++){
-    std::cout << "        ";
+    std::cout << "      ";
   }
   std::cout << current->name << std::endl;
 
@@ -159,6 +159,8 @@ void bst::display_info(node* current){
   display_info(current->left);
 }
 
+/* a function to retrieve based on a passed in name. The found 
+   information is returned by a reference in the arguments. */
 int bst::retrieve(char* name, char*& desc, char*& example, char*& efficiency){
   int success = retrieve(root, name, desc, example, efficiency);
   if(success == 0){
@@ -167,6 +169,9 @@ int bst::retrieve(char* name, char*& desc, char*& example, char*& efficiency){
   return 1;
 }
 
+/* this function walks through the whole tree to find a matching name.
+   if it finds it, it will supply what it found back through the arguments.
+   otherwise, it will return 0 if it could not be found. */
 int bst::retrieve(node* current, char* name, char*& d, char *& ex, char *& ef){
   if(!root) return 0;
 
@@ -193,7 +198,7 @@ int bst::retrieve(node* current, char* name, char*& d, char *& ex, char *& ef){
     strcpy(ef, current->efficiency);
     return 1;
   }
-  return 0;
+  return 1;
 }
 
 int bst::remove_by_name(char* name){

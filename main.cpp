@@ -76,6 +76,12 @@ int main(){
       cin.get(name, 180);
       cin.get();
       success = tree->retrieve(name, d, ex, ef);
+      if(success == 1){
+	cout << "NAME: " << name << endl;
+	cout << "DESCRIPTION: " << d << endl;
+	cout << "EXAMPLE: " << ex << endl;
+	cout << "ABOUT EFFICIENCY: " << ef << endl;
+      }
       print_error_messages(success, "retrieve");
     }
   }
