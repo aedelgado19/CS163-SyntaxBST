@@ -59,7 +59,8 @@ class bst {
   void display_all(node* current, int depth);
   void display_info(node* current);
   int retrieve(node* current, char* name, char*& d, char *& ex, char *&ef, bool & found);
-  int remove_by_name(node* current, char* name);
+  void remove_by_name(node*& current, char* name);
+  void find_ios(node* current, char* name, node *& found);
   int get_height(node* current);
   int efficiency(node* current);
   int display_syntax(node* current);

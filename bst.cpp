@@ -15,8 +15,8 @@
 #include <cstring>
 #include "bst.h"
 
-/* the constructor initializes the root to null as well
-   as its fields like left and right*/
+/* the constructor initializes the root to null. There are no
+   other private data members so nothing else needs to be initialized*/
 bst::bst(){
   root = NULL;
 }
@@ -144,6 +144,8 @@ void bst::display_all(node* current, int depth){
   display_all(current->left, depth + 1);  
 }
 
+/* a helper function to display the information for each node in the tree.
+   it prints out the right side first then the left. */
 void bst::display_info(node* current){
   if(!current) return;
 
@@ -156,12 +158,16 @@ void bst::display_info(node* current){
   std::cout << "     example: " << current->example << std::endl;
   std::cout << "     note about efficiency: " << current->efficiency << std::endl;
   std::cout << "     left child: ";
+
+  //if the left child exists print out the left's name
   if(current->left){
     std::cout << current->left->name << std::endl;
   } else {
     std::cout << "NULL" << std::endl;
   }
   std::cout << "     right child: ";
+
+  //if the right child exists print out the right's name
   if(current->right){
     std::cout << current->right->name << std::endl;
   } else {
@@ -215,13 +221,107 @@ int bst::retrieve(node* current, char* name, char*& d, char *& ex, char *& ef, b
   return 0;
 }
 
+/* remove_by_name is passed in a char pointer from main, and calls
+   the matching recursive function for it. if the name is null,
+   it returns a 0 to indicate function failure */
 int bst::remove_by_name(char* name){
-
-  return 0;
+  if(!name) return 0;
+  remove_by_name(root, name);
+  return 1;
 }
 
-int bst::remove_by_name(node* current, char* name){
-  return 0;
+/* this function is the recursive version of a removal. It is passed in
+   the root to start with, and the name of the node to delete. */
+void bst::remove_by_name(node*& current, char* name){
+  if(!current) return;
+
+  //first find where the node is using recursion
+  if(strcmp(name, current->name) < 0){ //right side first
+    remove_by_name(current->right, name); 
+  }
+
+  else if(strcmp(name, current->name) > 0){ //left side
+    remove_by_name(current->left, name);
+  }
+
+  else { //then you found the node to be deleted (strcmp returned a 0)
+    //case 1: Node is just a leaf — remove directly
+    if(!current->left && !current->right){
+      std::cout << "leaf " << std::endl;
+      delete current;
+      current = NULL;
+      return;
+    }
+
+    //case 2: Node has 1 child - copy child to node, delete child
+    else if(!current->right && current->left){ //only has the left
+      std::cout << "has left child only " << std::endl;
+      node* hold = current;
+      current = current->left;
+      delete hold;
+      hold = NULL;
+    }
+    else if(current->right && !current->left){ //only has the right
+      std::cout << "has right child only " << std::endl;
+      node* hold = current;
+      current = current->right;
+      delete hold;
+      hold = NULL;
+    }
+
+    //case 3: Node has 2 children - get smallest number in the right side
+    //copy that node to the node to be deleted then delete the original
+    else {
+      std::cout << "has 2 kids " << std::endl;
+      //copy over the data to a temporary pointer
+      node* hold = NULL;
+      find_ios(current->right, current->name, hold);
+      std::cout << "a " << std::endl;
+      std::cout << "current name: " << current->name << std::endl;
+      std::cout << "hold name: " << hold->name << std::endl;
+      //copy over the data:
+      strcpy(current->name, hold->name);
+      strcpy(current->desc, hold->desc);
+      strcpy(current->example, hold->example);
+      strcpy(current->efficiency, hold->efficiency);
+      std::cout << "b " << std::endl;
+    }
+  }
+}
+
+/* helper function to find the inorder successor of the passed in
+   node. Returns null if the root is null */
+void bst::find_ios(node* current, char* name, node *& found){
+  if(!current) {
+    found = NULL;
+    return;
+  }
+  std::cout << "c " << std::endl;
+  //found a match
+  if(strcmp(current->name, name) == 0){
+    std::cout << "d " << std::endl;
+    if(current->right){
+      while(current->right){ //traverse to right
+	current = current->right;
+      }
+      found = current;
+      std::cout << "e " << std::endl;
+      return;
+    }
+  }
+  std::cout << "f " << std::endl;
+  //otherwise check the left
+  else if(strcmp(current->name, name) > 0){
+    found = current; //found is the current node
+    find_ios(current->left, name, found);
+  }
+  std::cout << "g " << std::endl;
+
+  //else check the right
+  else {
+    find_ios(current->right, name, found);
+  }
+  std::cout << "h " << std::endl;
 }
 
 int bst::get_height(){
