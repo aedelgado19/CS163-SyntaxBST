@@ -8,7 +8,7 @@
    which will then call the recursive version of that 
    function.
 
-   Last updated: May 17, 2021
+   Last updated: May 25, 2021
  */
 
 #include <iostream>
@@ -232,105 +232,160 @@ int bst::remove_by_name(char* name){
 
 /* this function is the recursive version of a removal. It is passed in
    the root to start with, and the name of the node to delete. */
-void bst::remove_by_name(node*& current, char* name){
-  if(!current) return;
+node* bst::remove_by_name(node*& current, char* name){
+  if(!current) return NULL;
 
-  //first find where the node is using recursion
-  if(strcmp(name, current->name) < 0){ //right side first
-    remove_by_name(current->right, name); 
+  //check left side first
+  if(strcmp(current->name, name) > 0){
+    current->left = remove_by_name(current->left, name);
   }
 
-  else if(strcmp(name, current->name) > 0){ //left side
-    remove_by_name(current->left, name);
+  //right side
+  else if(strcmp(current->name, name) < 0){
+    current->right = remove_by_name(current->right, name);
   }
 
-  else { //then you found the node to be deleted (strcmp returned a 0)
-    //case 1: Node is just a leaf — remove directly
-    if(!current->left && !current->right){
-      std::cout << "leaf " << std::endl;
+  //otherwise, you found the node to be deleted
+  else {
+    //only has a right child
+    if(!current->left){
+      node* hold = current->right;
       delete current;
-      current = NULL;
-      return;
+      return hold;
+    }
+    //only has a left child
+    if(!current->right){
+      node* hold = current->left;
+      delete current;
+      return hold;
     }
 
-    //case 2: Node has 1 child - copy child to node, delete child
-    else if(!current->right && current->left){ //only has the left
-      std::cout << "has left child only " << std::endl;
-      node* hold = current;
-      current = current->left;
-      delete hold;
-      hold = NULL;
-    }
-    else if(current->right && !current->left){ //only has the right
-      std::cout << "has right child only " << std::endl;
-      node* hold = current;
-      current = current->right;
-      delete hold;
-      hold = NULL;
-    }
+    //has 2 children
+    if(current->right && current->left){
 
-    //case 3: Node has 2 children - get smallest number in the right side
-    //copy that node to the node to be deleted then delete the original
-    else {
-      std::cout << "has 2 kids " << std::endl;
+      //find inorder successor (go right, then furthest left)
+      node* hold = find_smallest(current->right);
 
-      //find inorder successor
-      node* t_parent = NULL; //ios's parent
-      node* temp = find_smallest(current->right, t_parent);
-      
-      //save the data of the node you found
-      char* n = new char[180]; //name
-      char* d = new char[500]; //desc
-      char* ex = new char[500]; //example 
-      char* eff = new char[50]; //efficiency
-      strcpy(n, temp->name);
-      strcpy(d, temp->desc);
-      strcpy(ex, temp->example);
-      strcpy(eff, temp->efficiency);
+      //copy it over to the current node
+      strcpy(current->name, hold->name);
+      strcpy(current->desc, hold->desc);
+      strcpy(current->example, hold->example);
+      strcpy(current->efficiency, hold->efficiency);
 
-      remove_by_name(current, n);
-
-      //copy over the data:
-      if(temp){
-	strcpy(current->name, n);
-	strcpy(current->desc, d);
-	strcpy(current->example, ex);
-	strcpy(current->efficiency, eff);
-	//delete the original ios
-	delete temp;
-	t_parent->left = NULL;
-	temp = NULL;
-      }
+      //now delete the ios
+      current->right = remove_by_name(current->right, current->name);
     }
   }
+  return current;
 }
 
 /* helper function to find the smallest number in the left
    subtree. It is called using current->right in the 
-   remove_by_name recursive function to find the inorder successor.
-   It also returns the ios's parent through the argument list*/
-node* bst::find_smallest(node* current, node*& parent){
+   remove_by_name recursive function to find the inorder successor. */
+node* bst::find_smallest(node* current){
   while(current && current->left){
-    parent = current;
     current = current->left;
   }
   return current;
 }
 
+/* a wrapper function to return the height of the tree. Calls
+   the recursive version of the function */
 int bst::get_height(){
-  return 0;
+  if(!root) return 0;
+  int left = 0;
+  int right = 0;
+  int to_return = get_height(root, left, right);
+  return to_return;
 }
 
-int bst::get_height(node* current){
-  return 0;
+/* a function to recursively find the height of the tree.
+   It starts by calling itself on the left subtree, then the
+   right subtree, and returns the larger amount (in case it is
+   a skewed tree. the left and right height are also saved through
+   the argument list (they are used in the efficiency function)*/
+int bst::get_height(node* current, int& left, int& right){
+  if(!current) return 0;
+
+  //save left subtree's height
+  left = get_height(current->left, left, right);
+
+  //save the right subtree's height
+  right = get_height(current->right, left, right);
+
+  //pick the larger number in case the tree is skewed one way
+  if(right > left){
+    return right + 1;
+  } else { //left
+    return left + 1;
+  }
 }
 
+/* a function to determine how efficient the tree is.
+   Worst case scenario is when the amount of nodes matches
+   the height (meaning it's like a LLL). */
 int bst::efficiency(){
+  //first count all the nodes
+  int amount = count_nodes(root);
+  int left = 0;
+  int right = 0;
+  int height = get_height(root, left, right);
+
+  //first pass: worst case scenario
+  if(amount == height){
+    return 2;
+  }
+
+  //check if perfectly balanced (same # of nodes in left as right)
+  bool balanced = check_balance(root);
+  bool full = is_full(root);
+  if(balanced == true || full == true){
+    return 1;
+  }
   return 0;
 }
 
-int bst::efficiency(node* current){
-  return 0;
+/* a helper function to count the amount of nodes in the tree.
+   It returns 1 + the left subtree call + the right subtree call */
+int bst::count_nodes(node* current){
+  if(!current) return 0;
+  return 1 + count_nodes(current->left) + count_nodes(current->right);
+}
+
+/* a helper function to determine if the tree is balanced:
+   Uses absolute value differences after finding the height
+   of each subtree.*/
+bool bst::check_balance(node* current){
+  if(!current) return false;
+
+  int left = 0;
+  int right = 0;
+  //get the heights of left and right thru argument list
+  get_height(root, left, right);
+  
+  //if absolute difference btwn height of left and right < 1, it's balanced
+  if(abs(left - right) < 1){
+    return true;
+  }
+  return false;
+}
+
+/* a helper function to see if the tree is full.
+   All nodes in a full BST  have 0 or 2 child nodes.*/
+bool bst::is_full(node* current){
+  if(!current) return true;
+
+  //leaf
+  if(!current->left && !current->right) return true;
+
+  //"full" node
+  if(current->left && current->right){
+    //also check its subtrees (otherwise it only checks one node)
+    if(is_full(current->left) == true && is_full(current->right) == true){
+      return true;
+    }
+  }
+  return false;
 }
 
 int bst::display_syntax(){

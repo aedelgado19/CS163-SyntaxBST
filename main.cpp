@@ -4,7 +4,7 @@
    of the bst class. It provides user input to the cpp file,
    maintaining the rules of data abstraction.
 
-   Last updated: May 17, 2021
+   Last updated: May 25, 2021
  */
 #include <iostream>
 #include <cstring>
@@ -97,6 +97,23 @@ int main(){
       cin.get();
       success = tree->remove_by_name(name);
       print_error_messages(success, "remove");
+    }
+
+    if(strcmp(input, "h") == 0){
+      if(tree){
+	cout << "The max height of the tree is ";
+	cout << tree->get_height() << endl;
+      } 
+    }
+
+    if(strcmp(input, "e") == 0){
+      cout << "The tree's efficiency is ";
+      int efficiency = tree->efficiency();
+      if(efficiency == 2){
+	cout << "O(N) time" << endl;
+      } else {
+	cout << "O(log n) time" << endl;
+      }
     }
   }
   return 0;
