@@ -28,7 +28,7 @@ int main(){
   while(strcmp(input, "q") != 0){
     cout << "--------------------------------" << endl;
     cout << "valid commands are: " << endl;
-    cout << "a - add a new syntax " << endl;
+    cout << "add - add a new syntax " << endl;
     cout << "d - display all syntaxes " << endl;
     cout << "ret - retrieve a matching item by name " << endl;
     cout << "rm - remove an item by name " << endl;
@@ -45,7 +45,7 @@ int main(){
       input[i] = tolower(input[i]);
     }
 
-    if(strcmp(input, "a") == 0){
+    if(strcmp(input, "add") == 0){
       cout << "Enter the name of your syntax. " << endl;
       cout << "> ";
       cin.get(name, 180);

@@ -60,7 +60,7 @@ class bst {
   void display_info(node* current);
   int retrieve(node* current, char* name, char*& d, char *& ex, char *&ef, bool & found);
   void remove_by_name(node*& current, char* name);
-  void find_ios(node* current, char* name, node *& found);
+  node* find_smallest(node* current, node *& parent);
   int get_height(node* current);
   int efficiency(node* current);
   int display_syntax(node* current);

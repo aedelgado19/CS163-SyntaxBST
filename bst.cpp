@@ -273,55 +273,48 @@ void bst::remove_by_name(node*& current, char* name){
     //copy that node to the node to be deleted then delete the original
     else {
       std::cout << "has 2 kids " << std::endl;
-      //copy over the data to a temporary pointer
-      node* hold = NULL;
-      find_ios(current->right, current->name, hold);
-      std::cout << "a " << std::endl;
-      std::cout << "current name: " << current->name << std::endl;
-      std::cout << "hold name: " << hold->name << std::endl;
+
+      //find inorder successor
+      node* t_parent = NULL; //ios's parent
+      node* temp = find_smallest(current->right, t_parent);
+      
+      //save the data of the node you found
+      char* n = new char[180]; //name
+      char* d = new char[500]; //desc
+      char* ex = new char[500]; //example 
+      char* eff = new char[50]; //efficiency
+      strcpy(n, temp->name);
+      strcpy(d, temp->desc);
+      strcpy(ex, temp->example);
+      strcpy(eff, temp->efficiency);
+
+      remove_by_name(current, n);
+
       //copy over the data:
-      strcpy(current->name, hold->name);
-      strcpy(current->desc, hold->desc);
-      strcpy(current->example, hold->example);
-      strcpy(current->efficiency, hold->efficiency);
-      std::cout << "b " << std::endl;
+      if(temp){
+	strcpy(current->name, n);
+	strcpy(current->desc, d);
+	strcpy(current->example, ex);
+	strcpy(current->efficiency, eff);
+	//delete the original ios
+	delete temp;
+	t_parent->left = NULL;
+	temp = NULL;
+      }
     }
   }
 }
 
-/* helper function to find the inorder successor of the passed in
-   node. Returns null if the root is null */
-void bst::find_ios(node* current, char* name, node *& found){
-  if(!current) {
-    found = NULL;
-    return;
+/* helper function to find the smallest number in the left
+   subtree. It is called using current->right in the 
+   remove_by_name recursive function to find the inorder successor.
+   It also returns the ios's parent through the argument list*/
+node* bst::find_smallest(node* current, node*& parent){
+  while(current && current->left){
+    parent = current;
+    current = current->left;
   }
-  std::cout << "c " << std::endl;
-  //found a match
-  if(strcmp(current->name, name) == 0){
-    std::cout << "d " << std::endl;
-    if(current->right){
-      while(current->right){ //traverse to right
-	current = current->right;
-      }
-      found = current;
-      std::cout << "e " << std::endl;
-      return;
-    }
-  }
-  std::cout << "f " << std::endl;
-  //otherwise check the left
-  else if(strcmp(current->name, name) > 0){
-    found = current; //found is the current node
-    find_ios(current->left, name, found);
-  }
-  std::cout << "g " << std::endl;
-
-  //else check the right
-  else {
-    find_ios(current->right, name, found);
-  }
-  std::cout << "h " << std::endl;
+  return current;
 }
 
 int bst::get_height(){
