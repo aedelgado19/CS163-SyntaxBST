@@ -253,15 +253,21 @@ int bst::remove_by_name(node*& current, char* name){
 
   //otherwise, you found the node to be deleted
   else {
+    //no children
+    if(!current->left && !current->right){
+      delete current;
+      return 1;
+    }
+    
     //only has a right child
-    if(!current->left){
+    if(!current->left && current->right){
       node* hold = current->right;
       delete current;
       current = hold;
       return 1;
     }
     //only has a left child
-    if(!current->right){
+    if(!current->right && current->left){
       node* hold = current->left;
       delete current;
       current = hold;
@@ -273,13 +279,12 @@ int bst::remove_by_name(node*& current, char* name){
       node* temp = current;
       //find inorder successor (go right, then furthest left)
       find_smallest(current->right, current);
-      current->left = temp->left;
-      current->right = temp->right;
-      delete temp;
-      temp = NULL;
+      
+      //fix up pointers
+      
       
       //now delete the ios
-      remove_by_name(current->right, current->name);
+      remove_by_name(current, current->name);
     }
   }
   return 0;
@@ -294,6 +299,7 @@ void bst::find_smallest(node* current, node*& to_return){
   }
   if(!current->left){
     to_return = current;
+    return;
   }
 }
 
