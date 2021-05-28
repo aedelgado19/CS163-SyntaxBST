@@ -8,10 +8,11 @@
    A node contains a name, a description, an example,
    a note about its efficiency, and its pointers (L and R).
 
-   Last updated: May 25, 2021
+   Last updated: May 27, 2021
  */
 
 struct node {
+  ~node();
   char* name;
   char* desc;
   char* example;
@@ -49,7 +50,7 @@ class bst {
   int efficiency();
   
   //task 7: display a range of syntax concepts
-  int display_syntax();
+  int display_syntax(char lower, char upper);
   
  private:
   node* root;
@@ -59,13 +60,13 @@ class bst {
   void display_all(node* current, int depth);
   void display_info(node* current);
   int retrieve(node* current, char* name, char*& d, char *& ex, char *&ef, bool & found);
-  node* remove_by_name(node*& current, char* name);
-  node* find_smallest(node* current);
+  int remove_by_name(node*& current, char* name);
+  void find_smallest(node* current, node*& to_return);
   int get_height(node* current, int& left, int& right);
   bool check_balance(node* current);
   bool is_full(node* current);
   int efficiency(node* current);
   int count_nodes(node* current);
-  int display_syntax(node* current);
+  void display_syntax(node* current, char lower, char upper, bool& found);
 				  
 };

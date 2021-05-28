@@ -8,7 +8,7 @@
    which will then call the recursive version of that 
    function.
 
-   Last updated: May 25, 2021
+   Last updated: May 27, 2021
  */
 
 #include <iostream>
@@ -26,6 +26,13 @@ bst::bst(){
 bst::~bst(){
   if(!root) return;
   delete_all(root);
+}
+
+node::~node(){
+  delete [] name;
+  delete [] desc;
+  delete [] example;
+  delete [] efficiency;
 }
 
 /* a helper function to deallocate all noeds in the BST. It is
@@ -226,23 +233,22 @@ int bst::retrieve(node* current, char* name, char*& d, char *& ex, char *& ef, b
    it returns a 0 to indicate function failure */
 int bst::remove_by_name(char* name){
   if(!name) return 0;
-  remove_by_name(root, name);
-  return 1;
+  return remove_by_name(root, name);
 }
 
 /* this function is the recursive version of a removal. It is passed in
    the root to start with, and the name of the node to delete. */
-node* bst::remove_by_name(node*& current, char* name){
-  if(!current) return NULL;
+int bst::remove_by_name(node*& current, char* name){
+  if(!current) return 0;
 
   //check left side first
   if(strcmp(current->name, name) > 0){
-    current->left = remove_by_name(current->left, name);
+    return remove_by_name(current->left, name);
   }
 
   //right side
   else if(strcmp(current->name, name) < 0){
-    current->right = remove_by_name(current->right, name);
+    return remove_by_name(current->right, name);
   }
 
   //otherwise, you found the node to be deleted
@@ -251,42 +257,44 @@ node* bst::remove_by_name(node*& current, char* name){
     if(!current->left){
       node* hold = current->right;
       delete current;
-      return hold;
+      current = hold;
+      return 1;
     }
     //only has a left child
     if(!current->right){
       node* hold = current->left;
       delete current;
-      return hold;
+      current = hold;
+      return 1;
     }
 
     //has 2 children
     if(current->right && current->left){
-
+      node* temp = current;
       //find inorder successor (go right, then furthest left)
-      node* hold = find_smallest(current->right);
-
-      //copy it over to the current node
-      strcpy(current->name, hold->name);
-      strcpy(current->desc, hold->desc);
-      strcpy(current->example, hold->example);
-      strcpy(current->efficiency, hold->efficiency);
-
+      find_smallest(current->right, current);
+      current->left = temp->left;
+      current->right = temp->right;
+      delete temp;
+      temp = NULL;
+      
       //now delete the ios
-      current->right = remove_by_name(current->right, current->name);
+      remove_by_name(current->right, current->name);
     }
   }
-  return current;
+  return 0;
 }
 
 /* helper function to find the smallest number in the left
    subtree. It is called using current->right in the 
    remove_by_name recursive function to find the inorder successor. */
-node* bst::find_smallest(node* current){
-  while(current && current->left){
-    current = current->left;
+void bst::find_smallest(node* current, node*& to_return){
+  if(current && current->left){
+    find_smallest(current->left, to_return);
   }
-  return current;
+  if(!current->left){
+    to_return = current;
+  }
 }
 
 /* a wrapper function to return the height of the tree. Calls
@@ -388,10 +396,56 @@ bool bst::is_full(node* current){
   return false;
 }
 
-int bst::display_syntax(){
-  return 0;
+/* a wrapper function that calls the recursive version to display all syntaxes
+   within a given range (lower and upper are the bounds). If the arguments weren't
+   passed in correctly, it will return 0. Same if the root does not exist. It 
+   will then (if it passed those checks) call the recursive function, and return
+   what the recursive function returns */
+int bst::display_syntax(char lower, char upper){
+  if(!lower || !upper) return 0;
+  if(!root) return 0;
+
+  bool found = false;
+  display_syntax(root, lower, upper, found);
+  if(found == false){
+    return 0; //could not find any matching syntax
+  }
+  return 1;
 }
 
-int bst::display_syntax(node* current){
-  return 0;
+/* a recursive function to display all syntaxes within a given range (lower -> upper).
+   It traverses the tree, and if the node's name that it finds is within the range,
+   it will display its information. */
+void bst::display_syntax(node* current, char lower, char upper, bool& found){
+  if(!current) return;
+  
+  //right side
+  display_syntax(current->right, lower, upper, found);
+
+  //print info
+  if(((int) lower <= (int) current->name[0]) && ((int) upper >= (int) current->name[0])){
+    found = true;
+    std::cout << "NAME: " << current->name << std::endl;
+    std::cout << "     description: " << current->desc << std::endl;
+    std::cout << "     example: " << current->example << std::endl;
+    std::cout << "     note about efficiency: " << current->efficiency << std::endl;
+    std::cout << "     left child: ";
+
+    //if the left child exists print out the left's name
+    if(current->left){
+      std::cout << current->left->name << std::endl;
+    } else {
+      std::cout << "NULL" << std::endl;
+    }
+    std::cout << "     right child: ";
+
+    //if the right child exists print out the right's name
+    if(current->right){
+      std::cout << current->right->name << std::endl;
+    } else {
+      std::cout << "NULL" << std::endl;
+    }
+  }
+  //left side
+  display_syntax(current->left, lower, upper, found);
 }

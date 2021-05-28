@@ -16,6 +16,8 @@ void print_error_messages(int success, const char function_name[]);
 int main(){
   int success = 0;
   bst* tree = new bst();
+  char lower;
+  char upper;
   char input[20];
   char name[180];
   char desc[500];
@@ -34,6 +36,7 @@ int main(){
     cout << "rm - remove an item by name " << endl;
     cout << "h - return the height of the tree " << endl;
     cout << "e - determine how efficient the tree is " << endl;
+    cout << "dr - display range of syntaxes " << endl;
     cout << "q - quit " << endl;
     cout << "> ";
     cin.get(input, 20);
@@ -105,7 +108,6 @@ int main(){
 	cout << tree->get_height() << endl;
       } 
     }
-
     if(strcmp(input, "e") == 0){
       cout << "The tree's efficiency is ";
       int efficiency = tree->efficiency();
@@ -114,6 +116,20 @@ int main(){
       } else {
 	cout << "O(log n) time" << endl;
       }
+    }
+    if(strcmp(input, "dr") == 0){
+      cout << "This function displays all syntaxes in a given range (ex: A-M)" << endl;
+      cout << "Please only enter a single letter. " << endl;
+      cout << "Enter the lower bound of the range. " << endl;
+      cout << "> ";
+      cin >> lower;
+      cin.get();
+      cout << "Enter the upper bound of the range. " << endl;
+      cout << "> ";
+      cin >> upper;
+      cin.get();
+      success = tree->display_syntax(lower, upper);
+      print_error_messages(success, "syntax");
     }
   }
   return 0;
@@ -143,6 +159,9 @@ void print_error_messages(int success, const char function_name[]){
       cout << "Could not find a matching syntax." << endl;
       cout << " " << endl;
     }
-
+    if(strcmp(function_name, "syntax") == 0){
+      cout << "Could not find anything in that range. " << endl;
+      cout << " " << endl;
+    }
   }
 }
