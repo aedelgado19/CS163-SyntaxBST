@@ -240,7 +240,7 @@ int bst::remove_by_name(char* name){
    the root to start with, and the name of the node to delete. */
 int bst::remove_by_name(node*& current, char* name){
   if(!current) return 0;
-
+  
   //check left side first
   if(strcmp(current->name, name) > 0){
     return remove_by_name(current->left, name);
@@ -276,15 +276,17 @@ int bst::remove_by_name(node*& current, char* name){
 
     //has 2 children
     if(current->right && current->left){
-      node* temp = current;
+      node* ios = current;
       //find inorder successor (go right, then furthest left)
-      find_smallest(current->right, current);
+      find_smallest(current->right, ios);
       
-      //fix up pointers
-      
-      
+      strcpy(current->name, ios->name);
+      strcpy(current->desc, ios->desc);
+      strcpy(current->example, ios->example);
+      strcpy(current->efficiency, ios->efficiency);
+
       //now delete the ios
-      remove_by_name(current, current->name);
+      return remove_by_name(current->right, ios->name);
     }
   }
   return 0;
