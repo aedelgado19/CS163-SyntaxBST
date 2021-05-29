@@ -258,6 +258,11 @@ node* bst::remove_by_name(node*& current, char* name, bool& found){
 
   //otherwise, you found the node to be deleted
   else {
+    //no children
+    if(!current->left && !current->right){
+      return NULL;
+    }
+    
     //left is null
     if(!current->left){
       node* hold = current->right;
