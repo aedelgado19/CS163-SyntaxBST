@@ -234,7 +234,7 @@ int bst::retrieve(node* current, char* name, char*& d, char *& ex, char *& ef, b
 int bst::remove_by_name(char* name){
   if(!name) return 0;
   bool found = false;
-  remove_by_name(root, name, found);
+  root = remove_by_name(root, name, found);
   if(found == true){
     return 1;
   }
@@ -260,6 +260,7 @@ node* bst::remove_by_name(node*& current, char* name, bool& found){
   else {
     //no children
     if(!current->left && !current->right){
+      found = true;
       return NULL;
     }
     
