@@ -39,23 +39,14 @@ node::~node(){
 /* a helper function to deallocate all nodes in the BST. It is
    called by the destructor since the destructor can't have parameters 
    and recursion does need parameters, so this is a separate function. */
-void bst::delete_all(node*& current){
-  if(!current) return;
-
-  if(current && current->left){
-    delete_all(current->left);
-  }
-  if(current && current->right){
-    delete_all(current->right);
-  }
-
+node* bst::delete_all(node*& current){
   if(current){
-    delete [] current->name;
-    delete [] current->desc;
-    delete [] current->example;
-    delete [] current->efficiency;
-    delete current;
+    delete_all(current->left);
+    delete_all(current->right);
+    current = NULL;
+    return current;
   }
+  return NULL;
 }
 
 

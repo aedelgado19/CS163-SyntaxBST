@@ -67,5 +67,5 @@ class bst {
 
   //a function called by the destructor since the destructor cannot have
   //any parameters (which is necessary for recursion)
-  void delete_all(node *& current);
+  node* delete_all(node *& current);
 };
