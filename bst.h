@@ -60,7 +60,7 @@ class bst {
   void display_all(node* current, int depth);
   void display_info(node* current);
   int retrieve(node* current, char* name, char*& d, char *& ex, char *&ef, bool & found);
-  int remove_by_name(node*& current, char* name);
+  node* remove_by_name(node*& current, char* name, bool& found);
   void find_smallest(node* current, node*& to_return);
   int get_height(node* current, int& left, int& right);
   bool check_balance(node* current);

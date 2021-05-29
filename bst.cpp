@@ -233,49 +233,49 @@ int bst::retrieve(node* current, char* name, char*& d, char *& ex, char *& ef, b
    it returns a 0 to indicate function failure */
 int bst::remove_by_name(char* name){
   if(!name) return 0;
-  return remove_by_name(root, name);
+  bool found = false;
+  remove_by_name(root, name, found);
+  if(found == true){
+    return 1;
+  }
+  return 0;
 }
 
 /* this function is the recursive version of a removal. It is passed in
    the root to start with, and the name of the node to delete. */
-int bst::remove_by_name(node*& current, char* name){
-  if(!current) return 0;
+node* bst::remove_by_name(node*& current, char* name, bool& found){
+  if(!current) return current;
   
   //check left side first
   if(strcmp(current->name, name) > 0){
-    return remove_by_name(current->left, name);
+    current->left = remove_by_name(current->left, name, found);
   }
 
   //right side
   else if(strcmp(current->name, name) < 0){
-    return remove_by_name(current->right, name);
+    current->right = remove_by_name(current->right, name, found);
   }
 
   //otherwise, you found the node to be deleted
   else {
-    //no children
-    if(!current->left && !current->right){
-      delete current;
-      return 1;
-    }
-    
-    //only has a right child
-    if(!current->left && current->right){
+    //left is null
+    if(!current->left){
       node* hold = current->right;
       delete current;
-      current = hold;
-      return 1;
+      found = true;
+      return hold;
     }
-    //only has a left child
-    if(!current->right && current->left){
+    //right is null
+    if(!current->right){
       node* hold = current->left;
       delete current;
-      current = hold;
-      return 1;
+      found = true;
+      return hold;
     }
 
     //has 2 children
     if(current->right && current->left){
+      found = true;
       node* ios = current;
       //find inorder successor (go right, then furthest left)
       find_smallest(current->right, ios);
@@ -286,10 +286,10 @@ int bst::remove_by_name(node*& current, char* name){
       strcpy(current->efficiency, ios->efficiency);
 
       //now delete the ios
-      return remove_by_name(current->right, ios->name);
+      current->right = remove_by_name(current->right, ios->name, found);
     }
   }
-  return 0;
+  return current;
 }
 
 /* helper function to find the smallest number in the left
