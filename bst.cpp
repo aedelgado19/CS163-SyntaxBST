@@ -43,6 +43,7 @@ node* bst::delete_all(node*& current){
   if(current){
     delete_all(current->left);
     delete_all(current->right);
+    delete current;
     current = NULL;
     return current;
   }
