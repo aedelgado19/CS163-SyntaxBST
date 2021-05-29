@@ -132,6 +132,7 @@ int main(){
       print_error_messages(success, "syntax");
     }
   }
+  delete tree;
   return 0;
 }
 
