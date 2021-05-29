@@ -24,9 +24,9 @@ bst::bst(){
 /* the destructor deallocates all dynamically allocated data
    and calls the delete_all function to recursively delete all nodes */
 bst::~bst(){
-  std::cout << "here" << std::endl;
   if(!root) return;
   delete_all(root);
+  root = NULL;
 }
 
 node::~node(){
@@ -36,23 +36,26 @@ node::~node(){
   delete [] efficiency;
 }
 
-/* a helper function to deallocate all noeds in the BST. It is
+/* a helper function to deallocate all nodes in the BST. It is
    called by the destructor since the destructor can't have parameters 
    and recursion does need parameters, so this is a separate function. */
-int bst::delete_all(node*& current){
-  std::cout << "hi" << std::endl;
-  if(!root) return 0;
-  if(current){
+void bst::delete_all(node*& current){
+  if(!current) return;
+
+  if(current && current->left){
     delete_all(current->left);
+  }
+  if(current && current->right){
     delete_all(current->right);
+  }
+
+  if(current){
     delete [] current->name;
     delete [] current->desc;
     delete [] current->example;
     delete [] current->efficiency;
     delete current;
   }
-  root = NULL;
-  return 1;
 }
 
 

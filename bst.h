@@ -29,10 +29,6 @@ class bst {
   bst();
   ~bst();
 
-  //a function called by the destructor since the destructor cannot have
-  //any parameters (which is necessary for recursion)
-  int delete_all(node *& current);
-
   //task 2: insert a new item and display all
   int insert(char* name, char* desc, char* example, char* efficiency);
   int display_all();
@@ -68,5 +64,8 @@ class bst {
   int efficiency(node* current);
   int count_nodes(node* current);
   void display_syntax(node* current, char lower, char upper, bool& found);
-				  
+
+  //a function called by the destructor since the destructor cannot have
+  //any parameters (which is necessary for recursion)
+  void delete_all(node *& current);
 };
